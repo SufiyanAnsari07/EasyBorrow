@@ -63,7 +63,7 @@ const settingsSchema = new mongoose.Schema({
   },
   supportEmail: {
     type: String,
-    default: 'support@rentease.com'
+    default: 'support@EASYBORROW.com'
   },
   supportPhone: {
     type: String,

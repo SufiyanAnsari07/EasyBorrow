@@ -13,7 +13,7 @@ const mongoose = require('mongoose');
  */
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/rentease', {
+    const conn = await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/EASYBORROW', {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });

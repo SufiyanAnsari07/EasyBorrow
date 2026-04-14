@@ -144,7 +144,7 @@ const RegisterPage = () => {
             <Shield className="h-7 w-7 text-accent-400" />
           </div>
           <h2 className="text-3xl font-extrabold text-white tracking-tight mb-2">Create Account</h2>
-          <p className="text-sm text-dark-400">Join RentEase to start renting and lending securely</p>
+          <p className="text-sm text-dark-400">Join EASYBORROW to start renting and lending securely</p>
         </div>
 
         <div className="mt-8 glass-card py-8 px-6 sm:px-10 animate-fade-up">

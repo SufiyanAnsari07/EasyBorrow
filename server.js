@@ -11,7 +11,7 @@ connectDB();
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`🚀 RentEase server running on port ${PORT}`);
+  console.log(`🚀 EASYBORROW server running on port ${PORT}`);
   console.log(`📱 Frontend URL: ${process.env.FRONTEND_URL || 'http://localhost:5173'}`);
   console.log(`🔗 API Health Check: http://localhost:${PORT}/health`);
 });

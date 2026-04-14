@@ -63,7 +63,7 @@ const LoginPage = () => {
           Welcome back
         </h2>
         <p className="mt-2 text-center text-sm text-dark-400">
-          Sign in to your RentEase account
+          Sign in to your EASYBORROW account
         </p>
       </div>
 

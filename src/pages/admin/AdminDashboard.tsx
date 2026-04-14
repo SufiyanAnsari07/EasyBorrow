@@ -1210,7 +1210,7 @@ const AdminSettings = () => {
     newUserBonus: 1000,
     referralBonus: 500,
     maxItemsPerUser: 10,
-    supportEmail: 'support@rentease.com',
+    supportEmail: 'support@EASYBORROW.com',
     supportPhone: '+91-9876543210'
   });
   const [isLoading, setIsLoading] = useState(false);
@@ -1275,7 +1275,7 @@ const AdminSettings = () => {
       newUserBonus: 1000,
       referralBonus: 500,
       maxItemsPerUser: 10,
-      supportEmail: 'support@rentease.com',
+      supportEmail: 'support@EASYBORROW.com',
       supportPhone: '+91-9876543210'
     });
     setMessage('Settings reset to defaults.');

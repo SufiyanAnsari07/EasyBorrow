@@ -67,7 +67,7 @@ app.use(maintenanceMode);
 app.get('/health', (req, res) => {
   res.json({
     success: true,
-    message: 'RentEase API is running',
+    message: 'EASYBORROW API is running',
     timestamp: new Date().toISOString()
   });
 });

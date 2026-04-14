@@ -28,7 +28,7 @@ const Navbar = () => {
               </div>
             </div>
             <span className="text-2xl font-bold text-white tracking-tight">
-              Rent<span className="text-accent-400">Ease</span>
+              Easy<span className="text-accent-400">Borrow</span>
             </span>
           </Link>
 

@@ -492,7 +492,7 @@ const AddItemPage = () => {
                 <ul className="text-sm text-blue-800 space-y-1">
                   <li>• You confirm that you own this item and have the right to rent it</li>
                   <li>• The item is in the condition described and images are accurate</li>
-                  <li>• You agree to RentEase's terms of service and rental policies</li>
+                  <li>• You agree to EASYBORROW's terms of service and rental policies</li>
                   <li>• Platform commission: 5% of rental amount</li>
                 </ul>
               </div>

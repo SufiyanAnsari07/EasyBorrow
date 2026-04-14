@@ -1,6 +1,6 @@
-# 📦 Rentease – Peer-to-Peer Rental Management Platform
+# 📦 EasyBorrow – Peer-to-Peer Rental Management Platform
 
-**Rentease** is a full-stack MERN web application designed to simplify and streamline peer-to-peer item rentals. It allows users to list items they own, browse items available for rent, manage bookings, track rental activity, and communicate through a unified platform.
+**EasyBorrow** is a full-stack MERN web application designed to simplify and streamline peer-to-peer item rentals. It allows users to list items they own, browse items available for rent, manage bookings, track rental activity, and communicate through a unified platform.
 
 The system brings structure, trust, and transparency to the sharing economy by providing verified user profiles, booking workflows, owner approvals, rental tracking, and an admin oversight layer.
 
@@ -35,9 +35,9 @@ Built with  **MongoDB, Express.js, React.js, and Node.js** , the application foc
 
 ---
 
-## 📁 Project Structure (High-Level)RENTEASE
+## 📁 Project Structure (High-Level)EASYBORROW
 
-<pre class="overflow-visible!" data-start="564" data-end="1953"><div class="contain-inline-size rounded-2xl relative bg-token-sidebar-surface-primary"><div class="sticky top-9"><div class="absolute end-0 bottom-0 flex h-9 items-center pe-2"><div class="bg-token-bg-elevated-secondary text-token-text-secondary flex items-center gap-4 rounded-sm px-2 font-sans text-xs"></div></div></div><div class="overflow-y-auto p-4" dir="ltr"><code class="whitespace-pre!"><span><span>RENTEASE
+<pre class="overflow-visible!" data-start="564" data-end="1953"><div class="contain-inline-size rounded-2xl relative bg-token-sidebar-surface-primary"><div class="sticky top-9"><div class="absolute end-0 bottom-0 flex h-9 items-center pe-2"><div class="bg-token-bg-elevated-secondary text-token-text-secondary flex items-center gap-4 rounded-sm px-2 font-sans text-xs"></div></div></div><div class="overflow-y-auto p-4" dir="ltr"><code class="whitespace-pre!"><span><span>EASYBORROW
 │
 ├── server/                  </span><span># Backend (Node.js + Express)</span><span>
 │   ├── config/              </span><span># DB config, environment setup, utility configs</span><span>
@@ -70,11 +70,11 @@ Built with  **MongoDB, Express.js, React.js, and Node.js** , the application foc
 
 # 📌 Backend API Architecture (Express.js)
 
-Rentease aims to make renting as easy as online shopping — creating a trusted and user-friendly ecosystem where anyone can share or borrow items effortlessly.
+EASYBORROW aims to make renting as easy as online shopping — creating a trusted and user-friendly ecosystem where anyone can share or borrow items effortlessly.
 
 # 🛠️ Installation & Setup Guide
 
-Follow these steps to run **Rentease** locally on your machine.
+Follow these steps to run **EASYBORROW** locally on your machine.
 
 ---
 
@@ -91,8 +91,8 @@ Make sure the following are installed:
 
 ## **2️⃣ Clone the Repository**
 
-git clone https://github.com/maridulwalia/rentease.git
-cd rentease
+git clone https://github.com/maridulwalia/EASYBORROW.git
+cd EASYBORROW
 
 ---
 
@@ -112,7 +112,7 @@ cd rentease
 
 **Database Configuration**
 
-MONGODB_URI=mongodb://localhost:27017/rentease
+MONGODB_URI=mongodb://localhost:27017/EASYBORROW
 
 NODE_ENV=development
 
