@@ -30,6 +30,7 @@ const getItems = async (req, res) => {
       minPrice,
       maxPrice,
       city,
+      location,
       sortBy = 'createdAt',
       sortOrder = 'desc',
       page = 1,
@@ -37,7 +38,7 @@ const getItems = async (req, res) => {
     } = req.query;
 
     // Build query
-    let query = { isActive: true };
+    let query = { isActive: true, 'availability.isAvailable': true };
 
     // Text search
     if (keyword) {
@@ -56,9 +57,18 @@ const getItems = async (req, res) => {
       if (maxPrice) query.dailyPrice.$lte = Number(maxPrice);
     }
 
-    // Location filter
-    if (city) {
-      query['location.city'] = new RegExp(city, 'i');
+    const requestedCity = city || location;
+    const userCity = req.user?.address?.city?.trim();
+    const userState = req.user?.address?.state?.trim();
+
+    // Authenticated users only see items from their own region by default.
+    if (userCity) {
+      query['location.city'] = exactRegionRegExp(userCity);
+      if (userState) {
+        query['location.state'] = exactRegionRegExp(userState);
+      }
+    } else if (requestedCity) {
+      query['location.city'] = new RegExp(requestedCity, 'i');
     }
 
     // Get items that are currently rented (have active bookings)
@@ -219,6 +229,14 @@ const createItem = async (req, res) => {
         });
       }
     }
+    if (!parsedLocation && (req.body['location[street]'] || req.body['location[city]'] || req.body['location[state]'] || req.body['location[zipCode]'])) {
+      parsedLocation = {
+        street: req.body['location[street]'],
+        city: req.body['location[city]'],
+        state: req.body['location[state]'],
+        zipCode: req.body['location[zipCode]']
+      };
+    }
 
     if (typeof availability === 'string') {
       try {
@@ -227,6 +245,8 @@ const createItem = async (req, res) => {
         parsedAvailability = { isAvailable: true };
       }
     }
+
+    parsedLocation = normalizeLocation(parsedLocation);
 
     // Create item
     const item = await Item.create({
@@ -312,6 +332,20 @@ const updateItem = async (req, res) => {
     // Parse JSON fields
     if (updateData.location && typeof updateData.location === 'string') {
       updateData.location = JSON.parse(updateData.location);
+    }
+    if (!updateData.location && (updateData['location[street]'] || updateData['location[city]'] || updateData['location[state]'] || updateData['location[zipCode]'])) {
+      updateData.location = normalizeLocation({
+        street: updateData['location[street]'],
+        city: updateData['location[city]'],
+        state: updateData['location[state]'],
+        zipCode: updateData['location[zipCode]']
+      });
+      delete updateData['location[street]'];
+      delete updateData['location[city]'];
+      delete updateData['location[state]'];
+      delete updateData['location[zipCode]'];
+    } else if (updateData.location) {
+      updateData.location = normalizeLocation(updateData.location);
     }
     if (updateData.availability && typeof updateData.availability === 'string') {
       updateData.availability = JSON.parse(updateData.availability);
@@ -619,3 +653,14 @@ module.exports = {
   getCategories,
   extendRentalPeriod
 };
+
+const normalizeLocation = (location = {}) => ({
+  ...location,
+  street: location.street?.trim(),
+  city: location.city?.trim(),
+  state: location.state?.trim(),
+  zipCode: location.zipCode?.trim()
+});
+
+const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const exactRegionRegExp = (value) => new RegExp(`^\\s*${escapeRegExp(value.trim())}\\s*$`, 'i');

@@ -44,10 +44,10 @@ const itemSchema = new mongoose.Schema({
     required: true
   },
   location: {
-    street: String,
-    city: { type: String, required: true },
-    state: { type: String, required: true },
-    zipCode: String,
+    street: { type: String, trim: true },
+    city: { type: String, required: true, trim: true },
+    state: { type: String, required: true, trim: true },
+    zipCode: { type: String, trim: true },
     coordinates: {
       latitude: Number,
       longitude: Number

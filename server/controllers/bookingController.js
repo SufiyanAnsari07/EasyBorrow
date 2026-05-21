@@ -1,6 +1,8 @@
 const Booking = require('../models/Booking');
 const Item = require('../models/Item');
 const User = require('../models/User');
+const Review = require('../models/Review');
+const Complaint = require('../models/Complaint');
 const { validationResult } = require('express-validator');
 
 /**
@@ -32,7 +34,7 @@ const createBooking = async (req, res) => {
       });
     }
 
-    const { itemId, startDate, endDate } = req.body;
+    const { itemId, startDate, endDate, message } = req.body;
 
     // Get item details
     const item = await Item.findById(itemId).populate('owner');
@@ -101,6 +103,12 @@ const createBooking = async (req, res) => {
 
     // Add initial timeline entry
     booking.addTimelineEntry('pending', 'Booking request created');
+    if (message && message.trim()) {
+      booking.messages.push({
+        sender: req.user.id,
+        message: message.trim()
+      });
+    }
 
     await booking.save();
 
@@ -168,16 +176,32 @@ const getUserBookings = async (req, res) => {
       .populate('item', 'title images dailyPrice category')
       .populate('borrower', 'name email phone profileImage')
       .populate('lender', 'name email phone profileImage')
+      .populate('messages.sender', 'name profileImage')
       .sort({ createdAt: -1 })
       .limit(limit * 1)
       .skip((page - 1) * limit);
+
+    const bookingIds = bookings.map((booking) => booking._id);
+    const [reviews, complaints] = await Promise.all([
+      Review.find({ booking: { $in: bookingIds }, reviewer: req.user.id }).select('booking'),
+      Complaint.find({ booking: { $in: bookingIds }, complainant: req.user.id }).select('booking')
+    ]);
+    const reviewedBookingIds = new Set(reviews.map((review) => review.booking.toString()));
+    const complainedBookingIds = new Set(complaints.map((complaint) => complaint.booking.toString()));
+    const bookingsWithUserActions = bookings.map((booking) => ({
+      ...booking.toObject(),
+      userActions: {
+        hasReviewed: reviewedBookingIds.has(booking._id.toString()),
+        hasComplained: complainedBookingIds.has(booking._id.toString())
+      }
+    }));
 
     const total = await Booking.countDocuments(query);
 
     res.json({
       success: true,
       data: {
-        bookings,
+        bookings: bookingsWithUserActions,
         pagination: {
           current: page,
           pages: Math.ceil(total / limit),
@@ -282,11 +306,11 @@ const updateBookingStatus = async (req, res) => {
     }
 
     // Check authorization based on status change
-    if (status === 'approved' || status === 'cancelled') {
+    if (status === 'approved' || status === 'rejected' || status === 'cancelled') {
       if (booking.lender._id.toString() !== req.user.id) {
         return res.status(403).json({
           success: false,
-          message: 'Only the lender can approve or cancel bookings'
+          message: 'Only the lender can approve, reject, or cancel bookings'
         });
       }
     }
@@ -313,6 +337,10 @@ const updateBookingStatus = async (req, res) => {
       await Item.findByIdAndUpdate(booking.item._id, {
         'availability.isAvailable': false
       });
+
+    } else if (status === 'rejected' && booking.status === 'pending') {
+      booking.status = 'rejected';
+      booking.addTimelineEntry('rejected', note || 'Booking request rejected by lender');
 
     } else if (status === 'cancelled') {
       if (booking.payment.depositPaid) {
@@ -404,7 +432,11 @@ const updateBookingStatus = async (req, res) => {
 
     res.json({
       success: true,
-      message: `Booking ${status} successfully`,
+      message: status === 'approved'
+        ? 'Booking request accepted successfully'
+        : status === 'rejected'
+          ? 'Booking request rejected successfully'
+          : `Booking ${status} successfully`,
       data: { booking: updatedBooking }
     });
 

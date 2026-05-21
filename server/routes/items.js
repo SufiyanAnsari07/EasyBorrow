@@ -1,6 +1,6 @@
 const express = require('express');
 const { body } = require('express-validator');
-const { auth } = require('../middleware/auth');
+const { auth, optionalAuth } = require('../middleware/auth');
 const { uploadItemImages, handleUploadError } = require('../middleware/upload');
 const {
   getItems,
@@ -65,9 +65,8 @@ const itemValidation = [
  * - GET /user/my-items: Get user's own items
  */
 // Public routes
-router.get('/', getItems);
+router.get('/', optionalAuth, getItems);
 router.get('/categories', getCategories);
-router.get('/:id', getItemById);
 
 // Protected routes
 router.post('/', auth, uploadItemImages, handleUploadError, itemValidation, createItem);
@@ -75,5 +74,6 @@ router.put('/:id', auth, uploadItemImages, handleUploadError, updateItem);
 router.delete('/:id', auth, deleteItem);
 router.get('/user/my-items', auth, getUserItems);
 router.post('/extend-rental', auth, extendRentalPeriod);
+router.get('/:id', getItemById);
 
 module.exports = router;

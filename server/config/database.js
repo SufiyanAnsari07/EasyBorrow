@@ -12,6 +12,7 @@ const mongoose = require('mongoose');
  * @returns {Promise<void>}
  */
 const connectDB = async () => {
+  
   try {
     const conn = await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/EASYBORROW', {
       useNewUrlParser: true,
@@ -46,8 +47,10 @@ const createIndexes = async () => {
     const Item = require('../models/Item');
     const Booking = require('../models/Booking');
     
-    // Create text indexes for search
+    // Create unique and performance indexes
+    await User.createIndexes();
     await Item.createIndexes();
+    await Booking.createIndexes();
     
     console.log('Database indexes created successfully');
   } catch (error) {

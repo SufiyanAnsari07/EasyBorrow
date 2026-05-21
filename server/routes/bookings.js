@@ -40,7 +40,7 @@ const bookingValidation = [
  */
 const statusUpdateValidation = [
   body('status')
-    .isIn(['approved', 'cancelled', 'active', 'completed'])
+    .isIn(['approved', 'rejected', 'cancelled', 'active', 'completed'])
     .withMessage('Please provide a valid status')
 ];
 

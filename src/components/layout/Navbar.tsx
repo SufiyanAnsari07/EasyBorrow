@@ -66,6 +66,12 @@ const Navbar = () => {
                 >
                   Dashboard
                 </Link>
+                <Link
+                  to="/complaints"
+                  className="px-4 py-2 text-sm font-medium text-dark-200 hover:text-white rounded-xl hover:bg-white/[0.04] transition-all"
+                >
+                  Complaints
+                </Link>
                 
                 <div className="w-px h-6 bg-dark-700 mx-2"></div>
 
@@ -206,6 +212,13 @@ const Navbar = () => {
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Profile Settings
+                </Link>
+                <Link
+                  to="/complaints"
+                  className="block px-4 py-3 text-sm font-medium text-dark-200 hover:text-white hover:bg-white/[0.04] rounded-xl transition-colors"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Complaints
                 </Link>
                 {user?.role === 'admin' && (
                   <Link

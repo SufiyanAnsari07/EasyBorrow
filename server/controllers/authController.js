@@ -47,13 +47,22 @@ const register = async (req, res) => {
     }
 
     const { name, email, password, phone, address } = req.body;
+    const normalizedEmail = email.trim().toLowerCase();
+    const normalizedPhone = phone.trim();
     
-    // Check if user already exists
-    const existingUser = await User.findOne({ email });
+    // Check if user already exists before writing, and keep the database unique index as backup.
+    const existingUser = await User.findOne({
+      $or: [
+        { email: normalizedEmail },
+        { phone: normalizedPhone }
+      ]
+    });
     if (existingUser) {
       return res.status(400).json({
         success: false,
-        message: 'User already exists with this email'
+        message: existingUser.email === normalizedEmail
+          ? 'User already exists with this email'
+          : 'User already exists with this phone number'
       });
     }
 
@@ -98,9 +107,9 @@ const register = async (req, res) => {
     // Create user
     const user = await User.create({
       name,
-      email,
+      email: normalizedEmail,
       password,
-      phone,
+      phone: normalizedPhone,
       address: parsedAddress,
       idProof: req.file.path
     });
@@ -123,6 +132,18 @@ const register = async (req, res) => {
 
   } catch (error) {
     console.error('Registration error:', error);
+
+    if (error.code === 11000) {
+      const field = Object.keys(error.keyValue || {})[0] || 'user';
+      return res.status(400).json({
+        success: false,
+        message: field === 'email'
+          ? 'User already exists with this email'
+          : field === 'phone'
+            ? 'User already exists with this phone number'
+            : `${field} already exists`
+      });
+    }
 
     // Handle specific MongoDB validation errors
     if (error.name === 'ValidationError') {
@@ -173,9 +194,10 @@ const login = async (req, res) => {
     }
 
     const { email, password } = req.body;
+    const normalizedEmail = email.trim().toLowerCase();
 
     // Check if user exists and include password for comparison
-    const user = await User.findOne({ email }).select('+password');
+    const user = await User.findOne({ email: normalizedEmail }).select('+password');
     if (!user) {
       return res.status(401).json({
         success: false,
@@ -276,7 +298,22 @@ const updateProfile = async (req, res) => {
     
     const updateData = {};
     if (name) updateData.name = name;
-    if (phone) updateData.phone = phone;
+    if (phone) {
+      const normalizedPhone = phone.trim();
+      const existingPhoneUser = await User.findOne({
+        phone: normalizedPhone,
+        _id: { $ne: req.user.id }
+      });
+
+      if (existingPhoneUser) {
+        return res.status(400).json({
+          success: false,
+          message: 'User already exists with this phone number'
+        });
+      }
+
+      updateData.phone = normalizedPhone;
+    }
     if (address) updateData.address = address;
     
     // Handle profile image upload
@@ -298,6 +335,15 @@ const updateProfile = async (req, res) => {
 
   } catch (error) {
     console.error('Update profile error:', error);
+
+    if (error.code === 11000) {
+      const field = Object.keys(error.keyValue || {})[0] || 'field';
+      return res.status(400).json({
+        success: false,
+        message: field === 'phone' ? 'User already exists with this phone number' : `${field} already exists`
+      });
+    }
+
     res.status(500).json({
       success: false,
       message: 'Server error updating profile'

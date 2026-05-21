@@ -91,7 +91,7 @@ Make sure the following are installed:
 
 ## **2️⃣ Clone the Repository**
 
-git clone https://github.com/maridulwalia/EASYBORROW.git
+https://github.com/SufiyanAnsari07/EasyBorrow.git
 cd EASYBORROW
 
 ---

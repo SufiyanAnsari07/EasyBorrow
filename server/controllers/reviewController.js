@@ -39,38 +39,29 @@ const createReview = async (req, res) => {
       });
     }
 
-    // Check if user is involved in this booking
-    if (booking.borrower._id.toString() !== req.user.id && 
-        booking.lender._id.toString() !== req.user.id) {
+    // Only the borrower can review after a completed rental.
+    if (booking.borrower._id.toString() !== req.user.id) {
       return res.status(403).json({
         success: false,
-        message: 'Not authorized to review this booking'
+        message: 'Only the borrower can review this booking'
       });
     }
 
     // Determine reviewee based on type and user role
     let reviewee;
     if (type === 'item') {
-      // Only borrower can review items
-      if (booking.borrower._id.toString() !== req.user.id) {
-        return res.status(403).json({
-          success: false,
-          message: 'Only borrowers can review items'
-        });
-      }
       reviewee = booking.lender._id;
     } else if (type === 'user') {
-      // Both can review each other
-      reviewee = booking.borrower._id.toString() === req.user.id 
-        ? booking.lender._id 
-        : booking.borrower._id;
+      return res.status(403).json({
+        success: false,
+        message: 'Owner reviews are disabled'
+      });
     }
 
     // Check if review already exists
     const existingReview = await Review.findOne({
       booking: bookingId,
-      reviewer: req.user.id,
-      type
+      reviewer: req.user.id
     });
 
     if (existingReview) {
@@ -115,6 +106,13 @@ const createReview = async (req, res) => {
 
   } catch (error) {
     console.error('Create review error:', error);
+    if (error.code === 11000) {
+      return res.status(400).json({
+        success: false,
+        message: 'Review already exists for this booking'
+      });
+    }
+
     res.status(500).json({
       success: false,
       message: 'Server error creating review'

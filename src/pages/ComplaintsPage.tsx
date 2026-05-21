@@ -47,6 +47,24 @@ const ComplaintsPage = () => {
     }
   };
 
+  const getComplaintRelation = (complaint: any) => {
+    if (complaint.type === 'item_damage') {
+      return {
+        label: 'Related to Item',
+        detail: complaint.item?.title ? `Item: ${complaint.item.title}` : 'Item complaint',
+        className: 'bg-purple-100 text-purple-800'
+      };
+    }
+
+    return {
+      label: 'Related to User',
+      detail: activeTab === 'filed'
+        ? `Against: ${complaint.defendant?.name || 'User'}`
+        : `Filed by: ${complaint.complainant?.name || 'User'}`,
+      className: 'bg-blue-100 text-blue-800'
+    };
+  };
+
   const tabs = [
     { id: 'filed', label: 'Filed by Me' },
     { id: 'received', label: 'Against Me' },
@@ -119,7 +137,10 @@ const ComplaintsPage = () => {
         </div>
       ) : (
         <div className="space-y-6">
-          {complaints.map((complaint: any) => (
+          {complaints.map((complaint: any) => {
+            const relation = getComplaintRelation(complaint);
+
+            return (
             <div key={complaint._id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
               <div className="flex items-start justify-between mb-4">
                 <div className="flex-1">
@@ -130,9 +151,13 @@ const ComplaintsPage = () => {
                     <span className={`text-xs font-medium ${getPriorityColor(complaint.priority)}`}>
                       {complaint.priority.toUpperCase()} PRIORITY
                     </span>
+                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${relation.className}`}>
+                      {relation.label}
+                    </span>
                   </div>
                   
                   <h3 className="text-lg font-semibold text-gray-900 mb-2">{complaint.subject}</h3>
+                  <p className="text-sm text-gray-600 mb-2">{relation.detail}</p>
                   
                   <div className="flex items-center text-sm text-gray-600 mb-3">
                     <Calendar className="h-4 w-4 mr-2" />
@@ -194,7 +219,8 @@ const ComplaintsPage = () => {
                 )}
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       )}
 

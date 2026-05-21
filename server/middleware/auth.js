@@ -58,6 +58,27 @@ const auth = async (req, res, next) => {
   }
 };
 
+const optionalAuth = async (req, res, next) => {
+  try {
+    const token = req.header('Authorization')?.replace('Bearer ', '');
+
+    if (!token) {
+      return next();
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || '8e3ueuyz82ze32i');
+    const user = await User.findById(decoded.id).select('-password');
+
+    if (user && !user.isSuspended) {
+      req.user = user;
+    }
+
+    next();
+  } catch (error) {
+    next();
+  }
+};
+
 const adminAuth = async (req, res, next) => {
   try {
     await auth(req, res, () => {
@@ -78,4 +99,4 @@ const adminAuth = async (req, res, next) => {
   }
 };
 
-module.exports = { auth, adminAuth };
+module.exports = { auth, optionalAuth, adminAuth };

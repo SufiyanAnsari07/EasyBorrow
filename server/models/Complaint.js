@@ -15,6 +15,10 @@ const complaintSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Booking'
   },
+  item: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Item'
+  },
   type: {
     type: String,
     enum: ['item_damage', 'late_return', 'no_show', 'inappropriate_behavior', 'payment_issue', 'other'],
@@ -66,5 +70,8 @@ const complaintSchema = new mongoose.Schema({
 }, {
   timestamps: true
 });
+
+complaintSchema.index({ booking: 1, complainant: 1 }, { unique: true, sparse: true });
+complaintSchema.index({ item: 1, type: 1 });
 
 module.exports = mongoose.model('Complaint', complaintSchema);

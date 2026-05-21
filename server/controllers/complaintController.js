@@ -26,9 +26,11 @@ const createComplaint = async (req, res) => {
       });
     }
 
+    let booking = null;
+
     // Check if booking exists (if provided)
     if (bookingId) {
-      const booking = await Booking.findById(bookingId);
+      booking = await Booking.findById(bookingId);
       if (!booking) {
         return res.status(404).json({
           success: false,
@@ -36,12 +38,29 @@ const createComplaint = async (req, res) => {
         });
       }
 
-      // Check if user is involved in the booking
-      if (booking.borrower.toString() !== req.user.id && 
-          booking.lender.toString() !== req.user.id) {
+      if (booking.borrower.toString() !== req.user.id) {
         return res.status(403).json({
           success: false,
-          message: 'Not authorized to file complaint for this booking'
+          message: 'Only the borrower can file a complaint for this booking'
+        });
+      }
+
+      if (booking.lender.toString() !== defendantId) {
+        return res.status(400).json({
+          success: false,
+          message: 'Complaint must be filed against the item owner'
+        });
+      }
+
+      const existingComplaint = await Complaint.findOne({
+        booking: bookingId,
+        complainant: req.user.id
+      });
+
+      if (existingComplaint) {
+        return res.status(400).json({
+          success: false,
+          message: 'Complaint already exists for this booking'
         });
       }
     }
@@ -51,6 +70,7 @@ const createComplaint = async (req, res) => {
       complainant: req.user.id,
       defendant: defendantId,
       booking: bookingId,
+      item: booking?.item,
       type,
       subject,
       description,
@@ -70,6 +90,13 @@ const createComplaint = async (req, res) => {
 
   } catch (error) {
     console.error('Create complaint error:', error);
+    if (error.code === 11000) {
+      return res.status(400).json({
+        success: false,
+        message: 'Complaint already exists for this booking'
+      });
+    }
+
     res.status(500).json({
       success: false,
       message: 'Server error creating complaint'
@@ -98,6 +125,7 @@ const getUserComplaints = async (req, res) => {
       .populate('complainant', 'name email profileImage')
       .populate('defendant', 'name email profileImage')
       .populate('booking', 'item startDate endDate')
+      .populate('item', 'title images')
       .sort({ createdAt: -1 })
       .limit(limit * 1)
       .skip((page - 1) * limit);
