@@ -1,149 +1,174 @@
-# 📦 EasyBorrow – Peer-to-Peer Rental Management Platform
+# EasyBorrow
 
-**EasyBorrow** is a full-stack MERN web application designed to simplify and streamline peer-to-peer item rentals. It allows users to list items they own, browse items available for rent, manage bookings, track rental activity, and communicate through a unified platform.
+EasyBorrow is a full-stack MERN rental platform for borrowing and lending items within a local community. Users can register, list items, browse available items in their own city and state, send rental requests, and manage bookings through an owner approval flow.
 
-The system brings structure, trust, and transparency to the sharing economy by providing verified user profiles, booking workflows, owner approvals, rental tracking, and an admin oversight layer.
+Repository: [SufiyanAnsari07/EasyBorrow](https://github.com/SufiyanAnsari07/EasyBorrow.git)
 
-Built with  **MongoDB, Express.js, React.js, and Node.js** , the application focuses on scalability, modular architecture, and future-ready expansion such as payment integration and cloud storage.
+## Features
 
----
+- User registration and login with JWT authentication
+- Unique user accounts by email and phone number
+- ID proof upload during registration
+- Item listing with images, price, value, deposit, condition, and location
+- Region-based item browsing by the logged-in user's city and state
+- Rental request flow where borrowers send requests to owners
+- Owner approval or rejection for each rental request
+- Booking status tracking for pending, accepted, rejected, active, completed, and cancelled bookings
+- Borrower-only reviews for completed bookings
+- Borrower-only complaints with one complaint allowed per booking
+- Complaint page with clear labels for item-related and user-related complaints
+- User dashboard for items, bookings, wallet, rental history, and owner requests
+- Admin dashboard for user, complaint, review, and platform management
 
-## 🚀 Key Features
+## Tech Stack
 
-* **User Authentication & Verification** – Secure login, ID verification, and role-based access.
-* **Item Listing System** – Owners can upload images, set rental rates, and manage availability.
-* **Rental Booking Flow** – Structured request → approval → pickup → completion cycle.
-* **Admin Panel** – User verification, complaint handling, and platform monitoring.
-* **Dashboard for All Roles** – Tailored views for owners, renters, and admins.
-* **Local File Uploads (with cloud-ready architecture)** – Images and documents stored locally for now, with planned integration of AWS S3 / Cloudinary.
-* **Scalable Backend Architecture** – REST APIs with clean modular controllers, routes, and services.
-* **Future Enhancements** – Payment gateway, automated security deposits, chat system, push notifications.
+Frontend:
+- React
+- TypeScript
+- Vite
+- Tailwind CSS
+- Zustand
+- Axios
 
----
+Backend:
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose
+- JWT
+- Multer
+- Bcrypt
 
-## 🛠️ Tech Stack
+## Project Structure
 
-**Frontend:** React.js, Axios, Tailwind/Custom CSS
+```text
+EasyBorrow/
+|-- server/
+|   |-- config/          # Database configuration
+|   |-- controllers/     # API controller logic
+|   |-- middleware/      # Auth, maintenance, and upload middleware
+|   |-- models/          # Mongoose models
+|   |-- routes/          # Express API routes
+|   `-- app.js           # Express app setup
+|-- src/
+|   |-- components/      # Reusable React components
+|   |-- hooks/           # Custom React hooks
+|   |-- pages/           # Page components
+|   |-- services/        # Axios API services
+|   |-- stores/          # Zustand stores
+|   |-- utils/           # Frontend utilities
+|   |-- App.tsx          # App routes
+|   `-- main.tsx         # React entry point
+|-- uploads/             # Local uploaded files
+|-- server.js            # Backend entry point
+|-- package.json
+`-- README.md
+```
 
-**Backend:** Node.js, Express.js
+## Getting Started
 
-**Database:** MongoDB (Mongoose ORM)
+### Prerequisites
 
-**Storage:** Local file system → planned cloud migration
+- Node.js 16 or newer
+- MongoDB running locally or a MongoDB Atlas connection string
+- Git
+- npm
 
-**Tools:** JWT Auth, Multer, Bcrypt, Nodemailer
+### Clone the Repository
 
----
+```bash
+git clone https://github.com/SufiyanAnsari07/EasyBorrow.git
+cd EasyBorrow
+```
 
-## 📁 Project Structure (High-Level)EASYBORROW
+### Install Dependencies
 
-<pre class="overflow-visible!" data-start="564" data-end="1953"><div class="contain-inline-size rounded-2xl relative bg-token-sidebar-surface-primary"><div class="sticky top-9"><div class="absolute end-0 bottom-0 flex h-9 items-center pe-2"><div class="bg-token-bg-elevated-secondary text-token-text-secondary flex items-center gap-4 rounded-sm px-2 font-sans text-xs"></div></div></div><div class="overflow-y-auto p-4" dir="ltr"><code class="whitespace-pre!"><span><span>EASYBORROW
-│
-├── server/                  </span><span># Backend (Node.js + Express)</span><span>
-│   ├── config/              </span><span># DB config, environment setup, utility configs</span><span>
-│   ├── controllers/         </span><span># Route logic / request handlers</span><span>
-│   ├── middleware/          </span><span># Auth, validation, file upload, admin checks</span><span>
-│   ├── models/              </span><span># Mongoose schemas & database models</span><span>
-│   ├── routes/              </span><span># API route definitions</span><span>
-│   └── app.js               </span><span># Main Express app entry point</span><span>
-│
-├── src/                     </span><span># Frontend (React + Vite + TypeScript)</span><span>
-│   ├── components/          </span><span># Reusable UI components</span><span>
-│   ├── hooks/               </span><span># Custom React hooks (auth, form, fetchers)</span><span>
-│   ├── pages/               </span><span># Standalone page-level components</span><span>
-│   ├── services/            </span><span># API service functions (Axios wrappers)</span><span>
-│   ├── stores/              </span><span># State management (Zustand/Context)</span><span>
-│   ├── utils/               </span><span># Helper functions & constants</span><span>
-│   ├── App.tsx              </span><span># Root component</span><span>
-│   └── main.tsx             </span><span># App bootstrap entry</span><span>
-│
-├── uploads/                 </span><span># Local storage for uploaded images/docs</span><span>
-│
-├── server.js           </span><span># server file to run backend</span><span>
-├── .</span><span>env</span><span></span><span>               # Environment variables</span><span>
-├── .gitignore               </span><span># Git ignored files</span><span>
-├── index.html               </span><span># Frontend HTML template</span><span>
-└── package.json             </span><span># Project metadata & dependencies</span><span>
-</span></span></code></div></div></pre>
+```bash
+npm install
+```
 
----
+### Environment Variables
 
-# 📌 Backend API Architecture (Express.js)
+Create a `.env` file in the project root:
 
-EASYBORROW aims to make renting as easy as online shopping — creating a trusted and user-friendly ecosystem where anyone can share or borrow items effortlessly.
-
-# 🛠️ Installation & Setup Guide
-
-Follow these steps to run **EASYBORROW** locally on your machine.
-
----
-
-## **1️⃣ Prerequisites**
-
-Make sure the following are installed:
-
-* **Node.js** (v16+ recommended)
-* **MongoDB** (local or Atlas Cloud)
-* **Git**
-* A package manager (**npm** or  **yarn** )
-
----
-
-## **2️⃣ Clone the Repository**
-
-https://github.com/SufiyanAnsari07/EasyBorrow.git
-cd EASYBORROW
-
----
-
-## **3️⃣ Backend & Frontend Setup**
-
-### Navigate to backend folder:
-
-<pre class="overflow-visible!" data-start="639" data-end="661"><div class="contain-inline-size rounded-2xl relative bg-token-sidebar-surface-primary"><div class="sticky top-9"><div class="absolute end-0 bottom-0 flex h-9 items-center pe-2"><div class="bg-token-bg-elevated-secondary text-token-text-secondary flex items-center gap-4 rounded-sm px-2 font-sans text-xs"></div></div></div><div class="overflow-y-auto p-4" dir="ltr"><code class="whitespace-pre! language-bash"><span><span>cd</span><span> backend
-</span></span></code></div></div></pre>
-
-### Install dependencies:
-
-<pre class="overflow-visible!" data-start="689" data-end="712"><div class="contain-inline-size rounded-2xl relative bg-token-sidebar-surface-primary"><div class="sticky top-9"><div class="absolute end-0 bottom-0 flex h-9 items-center pe-2"><div class="bg-token-bg-elevated-secondary text-token-text-secondary flex items-center gap-4 rounded-sm px-2 font-sans text-xs"></div></div></div><div class="overflow-y-auto p-4" dir="ltr"><code class="whitespace-pre! language-bash"><span><span>npm install
-</span></span></code></div></div></pre>
-
-### Create a `.env` file:
-
-**Database Configuration**
-
-MONGODB_URI=mongodb://localhost:27017/EASYBORROW
-
+```env
+MONGODB_URI=mongodb://localhost:27017/EasyBorrow
+JWT_SECRET=your_jwt_secret
 NODE_ENV=development
-
-**JWT Configuration**
-
-JWT_SECRET=your_key
-
-**Server Configuration**
-
 PORT=5000
-
 FRONTEND_URL=http://localhost:5173
-
-# File Upload Configuration
-
-UPLOAD_PATH=./server/uploads
-
+UPLOAD_PATH=./uploads
 MAX_FILE_SIZE=5242880
+```
 
-### Start backend server:
+### Run the Backend
 
-1. Open a terminal
-   2. Enter node server.js
+Open one terminal:
 
-Backend will run on:
+```bash
+node server.js
+```
 
-👉 **[http://localhost:5000]()**
+Backend URL:
 
-1. Open a new teerminal
-   2. Enter npm run dev
+```text
+http://localhost:5000
+```
 
-Frontend will run on:
+Health check:
 
-👉 **[http://localhost:5]()173**
+```text
+http://localhost:5000/health
+```
+
+### Run the Frontend
+
+Open another terminal:
+
+```bash
+npm run dev
+```
+
+Frontend URL:
+
+```text
+http://localhost:5173
+```
+
+## Main User Flow
+
+1. A user registers and logs in.
+2. An owner lists an item with location, price, deposit, and images.
+3. A borrower browses items available in their own city and state.
+4. The borrower sends a rental request for an item.
+5. The owner sees the request in the dashboard and accepts or rejects it.
+6. The borrower sees the current request status in their bookings.
+7. After completion, the borrower can submit one review and one complaint for that booking.
+
+## Important Routes
+
+Frontend:
+- `/` - Home
+- `/login` - Login
+- `/register` - Register
+- `/items` - Browse region-based items
+- `/items/:id` - Item details
+- `/dashboard` - User dashboard
+- `/bookings` - Rental bookings and request status
+- `/complaints` - Complaint management
+- `/admin` - Admin dashboard
+
+Backend API:
+- `/api/auth` - Authentication and profile routes
+- `/api/items` - Item routes
+- `/api/bookings` - Booking and rental request routes
+- `/api/reviews` - Review routes
+- `/api/complaints` - Complaint routes
+- `/api/admin` - Admin routes
+
+## Notes
+
+- Uploaded files are stored locally in the `uploads` folder.
+- Restart the backend after changing server-side code.
+- If MongoDB was dropped, start the backend again so Mongoose can recreate indexes.
+- Keep `.env` out of GitHub and use `.env.example` for shared configuration.
